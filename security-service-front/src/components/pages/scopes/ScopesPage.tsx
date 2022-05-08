@@ -1,11 +1,19 @@
 import { ButtonSpace, ListSpace, PageHeader, ScopesPageStyled } from "./ScopesPage.Styles";
 import { clientMock, scopesMock } from "utilities/mocks";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ScopeList from "./scope-list/ScopeList";
-import Scope from "utilities/model/Scope";
+import Scope from "utilities/models/Scope";
 import { Button } from "@mui/material";
+import { useLocation } from "react-router-dom";
+import ClientQueryParams from "utilities/models/ClientQueryParams";
+
+interface NavigationState {
+  queryParams: ClientQueryParams;
+}
 
 const ScopesPage = () => {
+  const location = useLocation();
+  const [clientQueryParams, setClientQueryParams] = useState<ClientQueryParams | null>(null);
   const [clientName, setClientName] = useState<string>(clientMock);
   const [scopes, setScopes] = useState<Scope[]>(
     scopesMock.map((scope) => {
@@ -18,9 +26,22 @@ const ScopesPage = () => {
 
   const checkHandler = (scopeName: string) => {
     setScopes((prevState) =>
-      prevState.map((scope) => (scope.name === scopeName ? { name: scope.name, checked: !scope.checked } : scope))
+      prevState.map((scope) => (scope.name === scopeName ? { ...scope, checked: !scope.checked } : scope))
     );
   };
+
+  useEffect(() => {
+    const { queryParams } = location.state as NavigationState;
+    setClientQueryParams(queryParams);
+  }, [location.state]);
+
+  useEffect(() => {
+    if (clientQueryParams !== null) {
+      setScopes((prevState) =>
+        prevState.map((scope) => (clientQueryParams.scopes.includes(scope.name) ? { ...scope, checked: true } : scope))
+      );
+    }
+  }, [clientQueryParams]);
 
   return (
     <ScopesPageStyled>

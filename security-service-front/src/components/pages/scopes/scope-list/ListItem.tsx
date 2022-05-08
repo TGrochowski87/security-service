@@ -1,5 +1,5 @@
 import { Checkbox } from "@mui/material";
-import Scope from "utilities/model/Scope";
+import Scope from "utilities/models/Scope";
 import { ListItemStyled } from "./ListItem.Styles";
 
 interface Props {

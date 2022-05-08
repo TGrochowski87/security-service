@@ -1,5 +1,5 @@
 import { Divider } from "@mui/material";
-import Scope from "utilities/model/Scope";
+import Scope from "utilities/models/Scope";
 import ListItem from "./ListItem";
 import { Header, ScopeListStyled } from "./ScopeList.Styles";
 
