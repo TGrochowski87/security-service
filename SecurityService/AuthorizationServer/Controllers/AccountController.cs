@@ -17,9 +17,9 @@ namespace AuthorizationServer.Controllers
         }
 
         [HttpPost("login")]
-        public ActionResult Login(LoginModel user)
+        public ActionResult Login(LoginModel model)
         {
-            var result = _accountService.Login(user);
+            var result = _accountService.Login(model);
 
             if (result.IsFailure)
                 return BadRequest(result);
@@ -38,16 +38,16 @@ namespace AuthorizationServer.Controllers
             return Ok(result);
         }
 
-        //[HttpPost("token")]
-        //public ActionResult Token(User user)
-        //{
-        //    var result = _accountService.Token(user);
+        [HttpPost("token")]
+        public ActionResult Token(TokenModel model)
+        {
+            var result = _accountService.Token(model);
 
-        //    if (result.IsFailure)
-        //        return BadRequest(result);
+            if (result.IsFailure)
+                return BadRequest(result);
 
-        //    return Ok(result);
-        //}
+            return Ok(result);
+        }
 
     }
 }
