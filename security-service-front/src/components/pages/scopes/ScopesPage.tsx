@@ -1,14 +1,18 @@
-import { ButtonSpace, ListSpace, PageHeader, ScopesPageStyled } from "./ScopesPage.Styles";
-import { clientMock, scopesMock } from "utilities/mocks";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { Button } from "@mui/material";
+
 import ScopeList from "./scope-list/ScopeList";
 import Scope from "utilities/models/Scope";
-import { Button } from "@mui/material";
-import { useLocation } from "react-router-dom";
 import ClientQueryParams from "utilities/models/ClientQueryParams";
+import { clientMock, scopesMock } from "utilities/mocks";
+
+import { ButtonSpace, ListSpace, PageHeader, ScopesPageStyled } from "./ScopesPage.Styles";
+import LoginData from "utilities/models/LoginData";
 
 interface NavigationState {
   queryParams: ClientQueryParams;
+  loginData: LoginData;
 }
 
 const ScopesPage = () => {
@@ -20,6 +24,7 @@ const ScopesPage = () => {
       return {
         name: scope,
         checked: false,
+        requested: false,
       } as Scope;
     })
   );
@@ -38,7 +43,9 @@ const ScopesPage = () => {
   useEffect(() => {
     if (clientQueryParams !== null) {
       setScopes((prevState) =>
-        prevState.map((scope) => (clientQueryParams.scopes.includes(scope.name) ? { ...scope, checked: true } : scope))
+        prevState.map((scope) =>
+          clientQueryParams.scopes.includes(scope.name) ? { ...scope, checked: true, requested: true } : scope
+        )
       );
     }
   }, [clientQueryParams]);
