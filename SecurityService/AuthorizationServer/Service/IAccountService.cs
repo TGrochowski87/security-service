@@ -8,5 +8,6 @@ namespace AuthorizationServer.Service
         Result Login(LoginModel user);
         Result<Dictionary<int, string>> GetScopes();
         Result Token(TokenModel model);
+        Result GetClientName(string clientId);
     }
 }
