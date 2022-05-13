@@ -1,6 +1,5 @@
 import { Button } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import { AppStyled, ButtonSpace } from "./App.Styles";
 
 function App() {

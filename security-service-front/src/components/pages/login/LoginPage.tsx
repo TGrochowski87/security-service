@@ -15,14 +15,17 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import ClientQueryParams from "utilities/models/ClientQueryParams";
+import LoginData from "utilities/models/LoginData";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [queryParams, setQueryParams] = useState<ClientQueryParams | null>(null);
 
-  const [usernameInput, setUsernameInput] = useState<string>("");
-  const [passwordInput, setPasswordInput] = useState<string>("");
+  const [input, setInput] = useState<LoginData>({
+    login: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [errorMessageOpen, setErrorMessageOpen] = useState<boolean>(false);
   const [inputsDisabled, setInputsDisabled] = useState<boolean>(true);
@@ -73,9 +76,7 @@ const LoginPage = () => {
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
-    navigate("/scopes", { state: { queryParams: queryParams } });
-
-    console.log("test");
+    navigate("/scopes", { state: { queryParams: queryParams, loginData: input } });
   };
 
   useEffect(() => {
@@ -108,8 +109,12 @@ const LoginPage = () => {
               label="Username"
               type={"text"}
               required
-              value={usernameInput}
-              onChange={(event) => setUsernameInput(event.target.value)}
+              value={input.login}
+              onChange={(event) =>
+                setInput((prevState) => {
+                  return { ...prevState, login: event.target.value };
+                })
+              }
               disabled={inputsDisabled}
             />
           </FormControl>
@@ -120,8 +125,12 @@ const LoginPage = () => {
               label="Password"
               required
               type={showPassword ? "text" : "password"}
-              value={passwordInput}
-              onChange={(event) => setPasswordInput(event.target.value)}
+              value={input.password}
+              onChange={(event) =>
+                setInput((prevState) => {
+                  return { ...prevState, password: event.target.value };
+                })
+              }
               disabled={inputsDisabled}
               endAdornment={
                 <InputAdornment position="end">
