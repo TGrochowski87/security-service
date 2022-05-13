@@ -49,5 +49,16 @@ namespace AuthorizationServer.Controllers
             return Ok(result);
         }
 
+        [HttpGet("client/{clientId}")]
+        public ActionResult GetClient(string clientId)
+        {
+            var result = _accountService.GetClientName(clientId);
+
+            if (result.IsFailure)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
     }
 }

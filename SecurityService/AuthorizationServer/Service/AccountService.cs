@@ -91,5 +91,23 @@ namespace AuthorizationServer.Service
                 return Result.Fail(e.Message);
             }
         }
+
+        public Result GetClientName(string clientId)
+        {
+            try
+            {
+                var client = ExampleClient.Clients
+                    .FirstOrDefault(x => x.ClientId == clientId);
+
+                if (client == null)
+                    return Result.Fail("Client not exists!");
+
+                return Result.Success(client.ClientName);
+            }
+            catch (Exception e)
+            {
+                return Result.Fail(e.Message);
+            }
+        }
     }
 }
