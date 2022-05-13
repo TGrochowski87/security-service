@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ClientApp.Service;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ClientApp.Controllers
 {
@@ -6,16 +7,16 @@ namespace ClientApp.Controllers
     [Route("users")]
     public class UserController : Controller
     {
-
-        public UserController()
+        private readonly IUserService _userService;
+        public UserController(IUserService userService)
         {
-
+            _userService  = userService;
         }
 
-        [HttpPost("authorize")]
-        public ActionResult Authorize()
+        [HttpGet("token/{code}")]
+        public ActionResult GetToken(string code)
         {
-            
+            var result = _userService.GetToken(code);
 
             if (result.IsFailure)
                 return BadRequest(result);

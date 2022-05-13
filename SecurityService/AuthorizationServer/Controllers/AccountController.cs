@@ -41,7 +41,8 @@ namespace AuthorizationServer.Controllers
         [HttpPost("token")]
         public ActionResult Token(TokenModel model)
         {
-            var result = _accountService.Token(model);
+            Request.Headers.TryGetValue("Authorization", out var authorization);
+            var result = _accountService.Token(model, authorization);
 
             if (result.IsFailure)
                 return BadRequest(result);
