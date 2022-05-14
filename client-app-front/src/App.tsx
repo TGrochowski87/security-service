@@ -7,7 +7,7 @@ function App() {
     responseType: "code",
     clientId: "774a0068e9c04e97ba6a96f85f61c05c",
     redirectUrl: "http://localhost:3001/",
-    scopes: ["scope1", "scope2"],
+    scopes: ["Friends", "Timeline"],
     state: "fadgfag3df58knfd0ns26klg3n1dfklgjn",
   });
   const authServerBaseUrl = useRef("http://localhost:3000/login");

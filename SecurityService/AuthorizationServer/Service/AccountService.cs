@@ -16,7 +16,7 @@ namespace AuthorizationServer.Service
             _configuration = configuration;
         }
 
-        public Result Login(LoginModel model)
+        public Result<string> Login(LoginModel model)
         {
             try
             {
@@ -24,7 +24,7 @@ namespace AuthorizationServer.Service
                     .FirstOrDefault(x => x.Username == model.Username && x.Password == model.Password);
 
                 if (user == null)
-                    return Result.Fail("User not exists!");
+                    return Result.Fail<string>("User does not exist!");
 
                 var code = string.Join(":", model.Scopes
                     .Select(x => x.ToString())
@@ -38,17 +38,12 @@ namespace AuthorizationServer.Service
             }
             catch (Exception e)
             {
-                return Result.Fail(e.Message);
+                return Result.Fail<string>(e.Message);
             }
         }
 
-        public Result<Dictionary<int, string>> GetScopes()
-        {
-            return Enum
-               .GetValues(typeof(ScopeEnum))
-               .Cast<ScopeEnum>()
-               .ToDictionary(x => (int)x, x => x.ToString());
-        }
+        public Result<List<string>> GetScopes() 
+          => Enum.GetNames(typeof(ScopeEnum)).ToList();
 
         public Result Token(TokenModel model)
         {
@@ -92,7 +87,7 @@ namespace AuthorizationServer.Service
             }
         }
 
-        public Result GetClientName(string clientId)
+        public Result<string> GetClientName(string clientId)
         {
             try
             {
@@ -100,13 +95,13 @@ namespace AuthorizationServer.Service
                     .FirstOrDefault(x => x.ClientId == clientId);
 
                 if (client == null)
-                    return Result.Fail("Client not exists!");
+                    return Result.Fail<string>("Client not exists!");
 
                 return Result.Success(client.ClientName);
             }
             catch (Exception e)
             {
-                return Result.Fail(e.Message);
+                return Result.Fail<string>(e.Message);
             }
         }
     }

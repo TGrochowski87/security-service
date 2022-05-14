@@ -5,9 +5,9 @@ namespace AuthorizationServer.Service
 {
     public interface IAccountService
     {
-        Result Login(LoginModel user);
-        Result<Dictionary<int, string>> GetScopes();
+        Result<string> Login(LoginModel user);
+        Result<List<string>> GetScopes();
         Result Token(TokenModel model);
-        Result GetClientName(string clientId);
+        Result<string> GetClientName(string clientId);
     }
 }

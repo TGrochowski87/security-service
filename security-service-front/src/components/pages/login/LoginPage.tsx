@@ -16,6 +16,7 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import ClientQueryParams from "utilities/models/ClientQueryParams";
 import LoginData from "utilities/models/LoginData";
+import { parseClientQueryParams } from "utilities/tools/urlQueryHandler";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -30,49 +31,6 @@ const LoginPage = () => {
   const [errorMessageOpen, setErrorMessageOpen] = useState<boolean>(false);
   const [inputsDisabled, setInputsDisabled] = useState<boolean>(true);
 
-  const parseQueryParams = (): ClientQueryParams | null => {
-    let splitParams = String(searchParams).split("&");
-    let keyValuePairs = splitParams
-      .map((param) => param.split("="))
-      .map((arrayKeyValuePair) => {
-        return {
-          [arrayKeyValuePair[0]]: arrayKeyValuePair[1],
-        };
-      });
-
-    let scopes = keyValuePairs.filter((pair) => "scopes" in pair).map((scopeObject) => scopeObject["scopes"]);
-
-    let mergedObject = keyValuePairs
-      .filter((pair) => "scopes" in pair === false)
-      .reduce((obj, item) => Object.assign(obj, item));
-
-    Object.assign(mergedObject, { scopes: scopes });
-
-    if (
-      mergedObject.hasOwnProperty("clientId") &&
-      typeof mergedObject["clientId"] === "string" &&
-      mergedObject.hasOwnProperty("redirectUrl") &&
-      typeof mergedObject["redirectUrl"] === "string" &&
-      mergedObject.hasOwnProperty("responseType") &&
-      typeof mergedObject["responseType"] === "string" &&
-      mergedObject.hasOwnProperty("scopes") &&
-      Array.isArray(mergedObject["scopes"]) &&
-      mergedObject["scopes"].every((value) => typeof value === "string") &&
-      mergedObject.hasOwnProperty("state") &&
-      typeof mergedObject["state"] === "string"
-    ) {
-      return {
-        clientId: mergedObject["clientId"],
-        redirectUrl: mergedObject["redirectUrl"],
-        responseType: mergedObject["responseType"],
-        scopes: Array.isArray(mergedObject["scopes"]) ? mergedObject["scopes"] : [],
-        state: mergedObject["state"],
-      } as ClientQueryParams;
-    } else {
-      return null;
-    }
-  };
-
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
@@ -80,7 +38,7 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-    let clientQueryParams = parseQueryParams();
+    let clientQueryParams = parseClientQueryParams(searchParams);
     if (clientQueryParams === null) {
       setErrorMessageOpen(true);
     } else {
@@ -97,7 +55,7 @@ const LoginPage = () => {
         autoHideDuration={6000}
         onClose={() => setErrorMessageOpen(false)}
       >
-        <Alert severity="error">Provided query parameters are invalid</Alert>
+        <Alert severity="error">Provided query parameters are invalid.</Alert>
       </Snackbar>
       <Logo src={icon} alt="logo" />
       <Form onSubmit={handleSubmit}>

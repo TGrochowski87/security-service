@@ -27,6 +27,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy("public", builder =>
+  {
+    builder.AllowAnyOrigin().AllowAnyHeader().WithMethods(HttpMethod.Post.Method);
+  });
+  options.AddPolicy("private", builder =>
+  {
+    builder.AllowAnyOrigin().AllowAnyHeader().WithMethods(HttpMethod.Post.Method);
+  });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -35,6 +47,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors();
 
 app.UseHttpsRedirection();
 
