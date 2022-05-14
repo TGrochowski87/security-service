@@ -6,13 +6,13 @@ namespace AuthorizationServer.Models
     {
         public string AccessToken { get; set; }
         public string TokenType { get; set; }
-        public List<ScopeEnum> Scope { get; set; }
+        public List<ScopeEnum> Scopes { get; set; }
 
-        public TokenResult(string accessToken, string tokenType, List<ScopeEnum> scope)
+        public TokenResult(string accessToken, string tokenType, List<ScopeEnum> scopes)
         {
             AccessToken = accessToken;
             TokenType = tokenType;
-            Scope = scope ?? new List<ScopeEnum>();
+            Scopes = scopes ?? new List<ScopeEnum>();
         }
     }
 }

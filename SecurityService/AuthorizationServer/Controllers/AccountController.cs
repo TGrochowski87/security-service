@@ -6,16 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AuthorizationServer.Controllers
 {
-  [ApiController]
-  [Route("accounts")]
-  public class AccountController : Controller
-  {
-    private readonly IAccountService _accountService;
-
-    public AccountController(IAccountService accountService)
+    [ApiController]
+    [Route("accounts")]
+    public class AccountController : Controller
     {
-      _accountService = accountService;
-    }
+        private readonly IAccountService _accountService;
+
+        public AccountController(IAccountService accountService)
+        {
+            _accountService = accountService;
+        }
 
     [HttpPost("login")]
     [EnableCors("private")]
@@ -23,8 +23,8 @@ namespace AuthorizationServer.Controllers
     {
       var result = _accountService.Login(model);
 
-      if (result.IsFailure)
-        return BadRequest(result);
+            if (result.IsFailure)
+                return BadRequest(result);
 
       return Ok(result.Value);
     }
@@ -37,30 +37,34 @@ namespace AuthorizationServer.Controllers
       return Ok(result);
     }
 
-    [HttpGet("scopes")]
-    [EnableCors("private")]
-    public ActionResult<List<ScopeEnum>> GetScopes()
-    {
-      var result = _accountService.GetScopes();
+        [HttpGet("scopes")]
+        [EnableCors("private")]
+        public ActionResult<List<ScopeEnum>> GetScopes()
+        {
+            var result = _accountService.GetScopes();
 
-      if (result.IsFailure)
-        return BadRequest(result);
+            if (result.IsFailure)
+                return BadRequest(result);
 
       return Ok(result.Value);
     }
 
-    [HttpPost("token")]
-    [EnableCors("public")]
-    public ActionResult Token([FromBody] TokenModel model)
-    {
-      Request.Headers.TryGetValue("Authorization", out var authorization);
-      var result = _accountService.Token(model, authorization);
+        [HttpPost("token")]
+        [EnableCors("public")]
+        public ActionResult<TokenResult> Token([FromBody] TokenModel model)
+        {
+            Request.Headers.TryGetValue("Authorization", out var authorization);
 
-      if (result.IsFailure)
-        return BadRequest(result);
+            if(string.IsNullOrEmpty(authorization))
+                return BadRequest("Empty headers");
 
-      return Ok(result);
-    }
+            var result = _accountService.Token(model, authorization);
+
+            if (result.IsFailure)
+                return BadRequest(result);
+
+            return Ok(result.Value);
+        }
 
     [HttpGet("client/{clientId}")]
     [EnableCors("private")]
@@ -68,8 +72,8 @@ namespace AuthorizationServer.Controllers
     {
       var result = _accountService.GetClientName(clientId);
 
-      if (result.IsFailure)
-        return BadRequest(result);
+            if (result.IsFailure)
+                return BadRequest(result);
 
       return Ok(result.Value);
     }
