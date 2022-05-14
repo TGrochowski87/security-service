@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 
 import icon from "assets/security-icon.png";
 import { Form, InputSpace, LoginPageStyled, Logo } from "./LoginPage.Styles";
@@ -17,30 +17,42 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import ClientQueryParams from "utilities/models/ClientQueryParams";
 import LoginData from "utilities/models/LoginData";
 import { parseClientQueryParams } from "utilities/tools/urlQueryHandler";
+import { loginUser } from "utilities/tools/api";
+import LoadingOverlay from "utilities/common-components/LoadingOverlay";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const location = useLocation();
   const [queryParams, setQueryParams] = useState<ClientQueryParams | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [input, setInput] = useState<LoginData>({
     login: "",
     password: "",
   });
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [errorMessageOpen, setErrorMessageOpen] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const [inputsDisabled, setInputsDisabled] = useState<boolean>(true);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
-    navigate("/scopes", { state: { queryParams: queryParams, loginData: input } });
+    setLoading(true);
+    loginUser(input)
+      .then((userId: string) => {
+        setLoading(false);
+        navigate("/scopes", { state: { queryParams: queryParams, userId: userId } });
+      })
+      .catch((error) => {
+        setLoading(false);
+        setErrorMessage("Invalid credentials.");
+      });
   };
 
   useEffect(() => {
-    let clientQueryParams = parseClientQueryParams(searchParams);
+    let clientQueryParams = parseClientQueryParams(location.search);
     if (clientQueryParams === null) {
-      setErrorMessageOpen(true);
+      setErrorMessage("Provided query parameters are invalid.");
     } else {
       setQueryParams(clientQueryParams);
       setInputsDisabled(false);
@@ -51,12 +63,13 @@ const LoginPage = () => {
     <LoginPageStyled>
       <Snackbar
         anchorOrigin={{ horizontal: "right", vertical: "top" }}
-        open={errorMessageOpen}
+        open={errorMessage.length > 0}
         autoHideDuration={6000}
-        onClose={() => setErrorMessageOpen(false)}
+        onClose={() => setErrorMessage("")}
       >
-        <Alert severity="error">Provided query parameters are invalid.</Alert>
+        <Alert severity="error">{errorMessage}</Alert>
       </Snackbar>
+      {loading && <LoadingOverlay />}
       <Logo src={icon} alt="logo" />
       <Form onSubmit={handleSubmit}>
         <InputSpace>

@@ -2,17 +2,15 @@
 
 namespace AuthorizationServer.Models
 {
-    public class LoginModel
+    public class Credentials
     {
         public string Username { get; set; }
         public string Password { get; set; }
-        public List<ScopeEnum> Scopes { get; set; }
 
-        public LoginModel(string username, string password, List<ScopeEnum> scopes)
+        public Credentials(string username, string password)
         {
             Username = username;
             Password = password;
-            Scopes = scopes;
         }
     }
 }

@@ -7,36 +7,46 @@ import Scope from "utilities/models/Scope";
 import ClientQueryParams from "utilities/models/ClientQueryParams";
 
 import { ButtonSpace, ListSpace, PageHeader, ScopesPageStyled } from "./ScopesPage.Styles";
-import LoginData from "utilities/models/LoginData";
 import { getAuthorizationCode, getClientName, getScopes } from "utilities/tools/api";
-import { buildFailedCodeRedirect } from "utilities/tools/urlQueryHandler";
+import { buildFailedCodeRedirect, buildSuccessfulCodeRedirect } from "utilities/tools/urlQueryHandler";
 
 interface NavigationState {
   queryParams: ClientQueryParams;
-  loginData: LoginData;
+  userId: string;
 }
 
 const ScopesPage = () => {
   const location = useLocation();
   const [clientQueryParams, setClientQueryParams] = useState<ClientQueryParams | null>(null);
-  const [credentials, setCredentials] = useState<LoginData | null>(null);
+  const [userId, setUserId] = useState<string>("");
   const [clientName, setClientName] = useState<string>("");
   const [scopes, setScopes] = useState<Scope[]>([]);
 
-  const [errorMessageOpen, setErrorMessageOpen] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const [inputsDisabled, setInputsDisabled] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(true);
 
   const checkHandler = (scopeName: string) => {
     setScopes((prevState) =>
-      prevState.map((scope) => (scope.name === scopeName ? { ...scope, checked: !scope.checked } : scope))
+      prevState.map((scope) =>
+        scope.name === scopeName && scope.requested === false ? { ...scope, checked: !scope.checked } : scope
+      )
     );
   };
 
   const submitHandler = () => {
-    getAuthorizationCode(credentials!, clientQueryParams!.scopes)
-      .then((code: string) => console.log())
-      .catch((error) => console.log(error));
+    getAuthorizationCode(userId, clientQueryParams!.scopes)
+      .then((code: string) => {
+        var url =
+          code.length > 0
+            ? buildSuccessfulCodeRedirect(clientQueryParams!.redirectUrl, code, clientQueryParams!.state)
+            : buildFailedCodeRedirect(clientQueryParams!.redirectUrl, clientQueryParams!.state);
+        window.location.replace(url);
+      })
+      .catch((error) => {
+        var url = buildFailedCodeRedirect(clientQueryParams!.redirectUrl, clientQueryParams!.state);
+        window.location.replace(url);
+      });
   };
 
   useEffect(() => {
@@ -45,7 +55,7 @@ const ScopesPage = () => {
     getClientName(clientQueryParams.clientId)
       .then((clientName: string) => setClientName(clientName))
       .catch((error) => {
-        setErrorMessageOpen(true);
+        setErrorMessage("Could not retrieve client application info. Please try again later.");
         setInputsDisabled(true);
       });
 
@@ -61,7 +71,7 @@ const ScopesPage = () => {
         setScopes(mappedScopes);
       })
       .catch((error) => {
-        setErrorMessageOpen(true);
+        setErrorMessage("Could not retrieve permissions from the server. Please try again later.");
         setInputsDisabled(true);
       });
   }, [clientQueryParams]);
@@ -74,20 +84,20 @@ const ScopesPage = () => {
   }, [clientName, scopes]);
 
   useEffect(() => {
-    const { queryParams, loginData } = location.state as NavigationState;
+    const { queryParams, userId } = location.state as NavigationState;
     setClientQueryParams(queryParams);
-    setCredentials(loginData);
+    setUserId(userId);
   }, [location.state]);
 
   return (
     <ScopesPageStyled>
       <Snackbar
         anchorOrigin={{ horizontal: "right", vertical: "top" }}
-        open={errorMessageOpen}
+        open={errorMessage.length > 0}
         autoHideDuration={6000}
-        onClose={() => setErrorMessageOpen(false)}
+        onClose={() => setErrorMessage("")}
       >
-        <Alert severity="error">Could not retrieve permissions from the server. Please try again later.</Alert>
+        <Alert severity="error">{errorMessage}</Alert>
       </Snackbar>
       {loading ? (
         <CircularProgress />
