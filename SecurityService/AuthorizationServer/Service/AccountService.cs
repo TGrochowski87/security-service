@@ -45,7 +45,7 @@ namespace AuthorizationServer.Service
         public Result<List<string>> GetScopes() 
           => Enum.GetNames(typeof(ScopeEnum)).ToList();
 
-        public Result Token(TokenModel model)
+        public Result Token(TokenModel model, string authorizationHeader)
         {
             try
             {
@@ -60,13 +60,21 @@ namespace AuthorizationServer.Service
                     scopes.Add(Enum.Parse<ScopeEnum>(codeParams[i]));
                 }
 
+                var headerParams = Base64Helper.Decode(model.Code)
+                    .Substring("Basic ".Length)
+                    .Trim()
+                    .Split(":");
+
+                var clientId = headerParams[0];
+                var clientSecret = headerParams[1];
+
                 var claims = new[] {
                         new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
                         new Claim("UserId", userId),
                         new Claim("Scopes", string.Join(":",scopes.Select(x=>x.ToString()))),
-                        new Claim("ClientSecret", model.ClientSecret)
+                        new Claim("ClientSecret", clientSecret)
                 };
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -79,7 +87,9 @@ namespace AuthorizationServer.Service
                         expires: DateTime.UtcNow.AddMinutes(10),
                         signingCredentials: signIn);
 
-                return Result.Success(new JwtSecurityTokenHandler().WriteToken(token));
+                var result = new TokenResult(new JwtSecurityTokenHandler().WriteToken(token), "Bearer", scopes);
+
+                return Result.Success(result);
             }
             catch (Exception e)
             {

@@ -1,8 +1,8 @@
 ﻿using System.Text;
 
-namespace AuthorizationServer.Common
+namespace ClientApp.Common
 {
-    public static class Base64Helper
+    public class Base64Helper
     {
         public static string Encode(string randomString)
         {

@@ -41,11 +41,12 @@ namespace AuthorizationServer.Controllers
       return Ok(result);
     }
 
-    [HttpPost("token")]
-    [EnableCors("public")]
+        [HttpPost("token")]
+        [EnableCors("public")]
     public ActionResult Token(TokenModel model)
-    {
-      var result = _accountService.Token(model);
+        {
+            Request.Headers.TryGetValue("Authorization", out var authorization);
+            var result = _accountService.Token(model, authorization);
 
       if (result.IsFailure)
         return BadRequest(result);
