@@ -1,5 +1,6 @@
 ﻿using ClientApp.Common;
 using ClientApp.Models;
+using Newtonsoft.Json;
 using RestSharp;
 
 namespace ClientApp.Service
@@ -32,8 +33,12 @@ namespace ClientApp.Service
 
                 var response = client.ExecuteAsync(request).Result;
 
+                if(!response.IsSuccessful)
+                    return Result.Fail<string>("Problem with authorization");
 
-                return Result.Success(code);
+                var result = JsonConvert.DeserializeObject<TokenResponse>(response.Content ?? string.Empty);
+
+                return Result.Success(result);
             }
             catch (Exception e)
             {

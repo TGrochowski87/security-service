@@ -45,7 +45,7 @@ namespace AuthorizationServer.Service
         public Result<List<string>> GetScopes() 
           => Enum.GetNames(typeof(ScopeEnum)).ToList();
 
-        public Result Token(TokenModel model, string authorizationHeader)
+        public Result<TokenResult> Token(TokenModel model, string authorizationHeader)
         {
             try
             {
@@ -60,13 +60,20 @@ namespace AuthorizationServer.Service
                     scopes.Add(Enum.Parse<ScopeEnum>(codeParams[i]));
                 }
 
-                var headerParams = Base64Helper.Decode(model.Code)
+                var header = authorizationHeader
                     .Substring("Basic ".Length)
-                    .Trim()
-                    .Split(":");
+                    .Trim();
+
+                var headerParams = Base64Helper.Decode(header).Split(":");
 
                 var clientId = headerParams[0];
                 var clientSecret = headerParams[1];
+
+                var client = ExampleClient.Clients
+                    .FirstOrDefault(x => x.ClientId == clientId && x.ClientSecret == clientSecret);
+
+                if (client == null)
+                    return Result.Fail<TokenResult>("Client not exists!");
 
                 var claims = new[] {
                         new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
@@ -93,7 +100,7 @@ namespace AuthorizationServer.Service
             }
             catch (Exception e)
             {
-                return Result.Fail(e.Message);
+                return Result.Fail<TokenResult>(e.Message);
             }
         }
 

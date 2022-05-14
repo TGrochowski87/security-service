@@ -7,7 +7,7 @@ namespace AuthorizationServer.Service
     {
         Result<string> Login(LoginModel user);
         Result<List<string>> GetScopes();
-        Result Token(TokenModel model, string authorizationHeader);
+        Result<TokenResult> Token(TokenModel model, string authorizationHeader);
         Result<string> GetClientName(string clientId);
     }
 }
