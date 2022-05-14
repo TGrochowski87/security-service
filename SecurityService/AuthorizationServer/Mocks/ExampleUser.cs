@@ -1,5 +1,4 @@
-﻿using AuthorizationServer.Common;
-using AuthorizationServer.Models;
+﻿using AuthorizationServer.Models;
 
 namespace AuthorizationServer
 {
