@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using ResourceApp.Service;
 
 namespace ResourceApp.Controllers
@@ -14,6 +15,7 @@ namespace ResourceApp.Controllers
         }
 
         [HttpGet("friends")]
+        [EnableCors("public")]
         public ActionResult<string> Friends()
         {
             Request.Headers.TryGetValue("Authorization", out var authorization);
