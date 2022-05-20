@@ -17,17 +17,25 @@ namespace AuthorizationServer.Controllers
             _accountService = accountService;
         }
 
-        [HttpPost("login")]
-        [EnableCors("private")]
-        public ActionResult<string> Login(LoginModel model)
-        {
-            var result = _accountService.Login(model);
+    [HttpPost("login")]
+    [EnableCors("private")]
+    public ActionResult<string> Login([FromBody] Credentials model)
+    {
+      var result = _accountService.Login(model);
 
             if (result.IsFailure)
                 return BadRequest(result);
 
-            return Ok(result);
-        }
+      return Ok(result.Value);
+    }
+
+    [HttpPost("code")]
+    [EnableCors("private")]
+    public ActionResult<string> Code([FromBody] CodeComponents codeComponents)
+    {
+      var result = _accountService.GenerateAuthorizationCode(codeComponents);
+      return Ok(result);
+    }
 
         [HttpGet("scopes")]
         [EnableCors("private")]
@@ -38,12 +46,12 @@ namespace AuthorizationServer.Controllers
             if (result.IsFailure)
                 return BadRequest(result);
 
-            return Ok(result);
-        }
+      return Ok(result.Value);
+    }
 
         [HttpPost("token")]
         [EnableCors("public")]
-        public ActionResult<TokenResult> Token(TokenModel model)
+        public ActionResult<TokenResult> Token([FromBody] TokenModel model)
         {
             Request.Headers.TryGetValue("Authorization", out var authorization);
 
@@ -58,16 +66,16 @@ namespace AuthorizationServer.Controllers
             return Ok(result.Value);
         }
 
-        [HttpGet("client/{clientId}")]
-        [EnableCors("private")]
-        public ActionResult<string> GetClient(string clientId)
-        {
-            var result = _accountService.GetClientName(clientId);
+    [HttpGet("client/{clientId}")]
+    [EnableCors("private")]
+    public ActionResult<string> GetClient([FromRoute] string clientId)
+    {
+      var result = _accountService.GetClientName(clientId);
 
             if (result.IsFailure)
                 return BadRequest(result);
 
-            return Ok(result);
-        }
+      return Ok(result.Value);
     }
+  }
 }

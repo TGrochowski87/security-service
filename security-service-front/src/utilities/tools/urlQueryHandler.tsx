@@ -1,6 +1,8 @@
 import ClientQueryParams from "utilities/models/ClientQueryParams";
 
-export const parseClientQueryParams = (searchParams: URLSearchParams): ClientQueryParams | null => {
+export const parseClientQueryParams = (searchParams: string): ClientQueryParams | null => {
+  searchParams = searchParams.replace("?", "");
+
   let splitParams = String(searchParams).split("&");
   let keyValuePairs = splitParams
     .map((param) => param.split("="))
@@ -44,11 +46,6 @@ export const parseClientQueryParams = (searchParams: URLSearchParams): ClientQue
 };
 
 export const buildSuccessfulCodeRedirect = (redirectUrl: string, code: string, state: string): string =>
-  buildCodeRedirect(redirectUrl, code, state);
+  `${redirectUrl}?code=${code}&state=${state}`;
 
-export const buildFailedCodeRedirect = (redirectUrl: string, state: string): string =>
-  buildCodeRedirect(redirectUrl, "", state);
-
-const buildCodeRedirect = (redirectUrl: string, code: string, state: string): string => {
-  return `${redirectUrl}?code=${code}&state=${state}`;
-};
+export const buildFailedCodeRedirect = (redirectUrl: string, state: string): string => `${redirectUrl}?state=${state}`;
