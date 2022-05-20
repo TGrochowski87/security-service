@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using ResourceApp.Service;
 
 namespace ResourceApp.Controllers
@@ -13,15 +14,16 @@ namespace ResourceApp.Controllers
             _resourceService = resourceService;
         }
 
-        [HttpGet("message/{token}")]
-        public ActionResult<string> Message(string token)
+        [HttpGet("friends")]
+        [EnableCors("public")]
+        public ActionResult<string> Friends()
         {
-            //Request.Headers.TryGetValue("Authorization", out var authorization);
+            Request.Headers.TryGetValue("Authorization", out var authorization);
 
-            //if (string.IsNullOrEmpty(authorization))
-            //    return BadRequest("Empty headers");
+            if (string.IsNullOrEmpty(authorization))
+                return BadRequest("Empty headers");
 
-            var result = _resourceService.GetMessage(token);
+            var result = _resourceService.GetFriends(authorization);
 
             if (result.IsFailure)
                 return BadRequest(result);

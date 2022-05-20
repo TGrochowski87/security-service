@@ -1,20 +1,31 @@
 ﻿using ResourceApp.Common;
+using ResourceApp.Mocks;
 
 namespace ResourceApp.Service
 {
     public class ResourceService : IResourceService
     {
-        public Result<string> GetMessage(string authorizationHeader)
+        public Result<string> GetFriends(string authorizationHeader)
         {
             var token = authorizationHeader
                    .Substring("Bearer ".Length)
                    .Trim();
 
-            var userId = TokenHelper.ValidateToken(authorizationHeader)?.FindFirst("UserId")?.Value;
+            var userId = TokenHelper.ValidateToken(token)?.FindFirst("UserId")?.Value;
 
-            var scopes = TokenHelper.ValidateToken(authorizationHeader)?.FindFirst("Scopes")?.Value;
+            var scopes = TokenHelper.ValidateToken(token)?.FindFirst("Scopes")?.Value;
 
-            return "";
+            if (!string.IsNullOrEmpty(scopes) && scopes.Contains("Friends"))
+            {
+                var result = ExampleUserFriends.UserFriends.FirstOrDefault(x => x.UserId == userId);
+
+                if(result == null)
+                    return Result.Fail<string>("User not exists!");
+
+                return string.Join(',', result.Friends);
+            }
+            else
+                return Result.Fail<string>("Scope:Friends is required!");
         }
     }
 }

@@ -10,6 +10,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IResourceService, ResourceService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("public", builder =>
+    {
+        builder.AllowAnyOrigin().AllowAnyHeader().WithMethods(HttpMethod.Post.Method);
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

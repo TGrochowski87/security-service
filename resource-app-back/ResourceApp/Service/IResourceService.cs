@@ -4,6 +4,6 @@ namespace ResourceApp.Service
 {
     public interface IResourceService
     {
-        Result<string> GetMessage(string authorizationHeader);
+        Result<string> GetFriends(string authorizationHeader);
     }
 }
