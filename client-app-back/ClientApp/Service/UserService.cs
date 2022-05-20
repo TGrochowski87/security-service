@@ -45,5 +45,30 @@ namespace ClientApp.Service
                 return Result.Fail(e.Message);
             }
         }
+
+        public Result GetFriends(string token)
+        {
+            try
+            {
+                var client = new RestClient("https://localhost:7006");
+
+                var request = new RestRequest("/resource/friends", Method.Get);
+                request.RequestFormat = DataFormat.Json;
+                request.AddParameter("Authorization", $"Bearer {token}", ParameterType.HttpHeader);
+
+                var response = client.ExecuteAsync(request).Result;
+
+                if (!response.IsSuccessful)
+                    return Result.Fail<string>("Problem with resource app");
+
+                var result = JsonConvert.DeserializeObject<string>(response.Content ?? string.Empty);
+
+                return Result.Success(result);
+            }
+            catch (Exception e)
+            {
+                return Result.Fail(e.Message);
+            }
+        }
     }
 }

@@ -23,5 +23,16 @@ namespace ClientApp.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("friends/{token}")]
+        public ActionResult GetFriends(string token)
+        {
+            var result = _userService.GetFriends(token);
+
+            if (result.IsFailure)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
     }
 }
