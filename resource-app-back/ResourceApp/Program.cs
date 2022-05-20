@@ -12,10 +12,11 @@ builder.Services.AddSingleton<IResourceService, ResourceService>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("public", builder =>
-    {
-        builder.AllowAnyOrigin().AllowAnyHeader().WithMethods(HttpMethod.Post.Method);
-    });
+  // Clients
+  options.AddPolicy("public", builder =>
+  {
+    builder.WithOrigins("http://localhost:3001", "https://localhost:3001").AllowAnyHeader().WithMethods(HttpMethod.Get.Method);
+  });
 });
 
 var app = builder.Build();
@@ -26,6 +27,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("public");
 
 app.UseHttpsRedirection();
 

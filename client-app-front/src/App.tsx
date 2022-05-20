@@ -3,6 +3,7 @@ import axios from "axios";
 import { RedirectData } from "models/RedirectData";
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { getResource, getToken } from "tools/api";
 import { buildAuthServerUrl } from "tools/urlQueryHandler";
 import { AppStyled, ButtonSpace } from "./App.Styles";
 
@@ -19,6 +20,7 @@ function App() {
   const authServerBaseUrl = useRef("http://localhost:3000/login");
   const [authServerUrl, setAuthServerUrl] = useState<string>("");
   const [code, setCode] = useState<string>("");
+  const [resource, setResource] = useState<string>("");
 
   useEffect(() => {
     const authServerUrl = buildAuthServerUrl(authServerBaseUrl.current, redirectData.current);
@@ -40,21 +42,17 @@ function App() {
   const isAuthServerRedirectQueryValid = (query: string): boolean =>
     query.includes("code") && query.includes("state") && query.split("=").at(-1) === redirectData.current.state;
 
-  const getToken = () => {
+  const handleGetToken = () => {
     if (code.length > 0) {
-      axios
-        .get<string>(`https://localhost:7171/users/token/${code}`)
-        .then((response) => {
-          sessionStorage.setItem("token", response.data);
-        })
-        .catch((error) => console.log(error));
+      getToken(code);
     }
   };
 
-  const getResource = () => {
+  const handleGetResource = () => {
     const token = sessionStorage.getItem("token");
 
     if (token !== null) {
+      getResource(token).then((friends) => setResource(friends));
     }
   };
 
@@ -64,12 +62,16 @@ function App() {
         <a href={authServerUrl}>
           <Button variant="contained">Log in</Button>
         </a>
-        <Button variant="contained" onClick={getToken}>
+        <Button variant="contained" onClick={handleGetToken}>
           Get Authorization token
         </Button>
-        <Button variant="contained">Get protected resource</Button>
+        <Button variant="contained" onClick={handleGetResource}>
+          Get protected resource
+        </Button>
       </ButtonSpace>
       <h3>{`Authorization code: ${code}`}</h3>
+      <h3>{`Authorization token: ${sessionStorage.getItem("token")?.toString()}`}</h3>
+      <h3>{`Protected resource: ${resource}`}</h3>
     </AppStyled>
   );
 }
