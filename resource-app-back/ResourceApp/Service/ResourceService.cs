@@ -15,7 +15,7 @@ namespace ResourceApp.Service
 
             var scopes = TokenHelper.ValidateToken(token)?.FindFirst("Scopes")?.Value;
 
-            if (scopes == "Friends")
+            if (!string.IsNullOrEmpty(scopes) && scopes.Contains("Friends"))
             {
                 var result = ExampleUserFriends.UserFriends.FirstOrDefault(x => x.UserId == userId);
 
