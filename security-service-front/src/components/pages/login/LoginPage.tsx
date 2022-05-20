@@ -40,12 +40,18 @@ const LoginPage = () => {
     setLoading(true);
     loginUser(input)
       .then((userId: string) => {
+        console.log(userId);
         setLoading(false);
         navigate("/scopes", { state: { queryParams: queryParams, userId: userId } });
       })
       .catch((error) => {
         setLoading(false);
-        setErrorMessage("Invalid credentials.");
+
+        if (error.response.status === 400) {
+          setErrorMessage("Invalid credentials.");
+        } else {
+          setErrorMessage("Something went wrong. Please try again later.");
+        }
       });
   };
 

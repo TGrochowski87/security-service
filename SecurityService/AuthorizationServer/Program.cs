@@ -29,13 +29,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 builder.Services.AddCors(options =>
 {
+  // Clients
   options.AddPolicy("public", builder =>
   {
-    builder.AllowAnyOrigin().AllowAnyHeader().WithMethods(HttpMethod.Post.Method);
+    builder.WithOrigins("https://localhost:7171").AllowAnyHeader().WithMethods(HttpMethod.Post.Method);
   });
+
+  // Service front
   options.AddPolicy("private", builder =>
   {
-    builder.AllowAnyOrigin().AllowAnyHeader().WithMethods(HttpMethod.Post.Method);
+    builder.WithOrigins("http://localhost:3000", "https://localhost:7171").AllowAnyHeader().AllowAnyMethod();
   });
 });
 

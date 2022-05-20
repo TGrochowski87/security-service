@@ -20,19 +20,7 @@ export const parseClientQueryParams = (searchParams: string): ClientQueryParams 
 
   Object.assign(mergedObject, { scopes: scopes });
 
-  if (
-    mergedObject.hasOwnProperty("clientId") &&
-    typeof mergedObject["clientId"] === "string" &&
-    mergedObject.hasOwnProperty("redirectUrl") &&
-    typeof mergedObject["redirectUrl"] === "string" &&
-    mergedObject.hasOwnProperty("responseType") &&
-    typeof mergedObject["responseType"] === "string" &&
-    mergedObject.hasOwnProperty("scopes") &&
-    Array.isArray(mergedObject["scopes"]) &&
-    mergedObject["scopes"].every((value) => typeof value === "string") &&
-    mergedObject.hasOwnProperty("state") &&
-    typeof mergedObject["state"] === "string"
-  ) {
+  if (allRequiredPropertiesArePresent(mergedObject)) {
     return {
       clientId: mergedObject["clientId"],
       redirectUrl: mergedObject["redirectUrl"],
@@ -49,3 +37,19 @@ export const buildSuccessfulCodeRedirect = (redirectUrl: string, code: string, s
   `${redirectUrl}?code=${code}&state=${state}`;
 
 export const buildFailedCodeRedirect = (redirectUrl: string, state: string): string => `${redirectUrl}?state=${state}`;
+
+const allRequiredPropertiesArePresent = (queryObject: any): boolean => {
+  return (
+    queryObject.hasOwnProperty("clientId") &&
+    typeof queryObject["clientId"] === "string" &&
+    queryObject.hasOwnProperty("redirectUrl") &&
+    typeof queryObject["redirectUrl"] === "string" &&
+    queryObject.hasOwnProperty("responseType") &&
+    typeof queryObject["responseType"] === "string" &&
+    queryObject.hasOwnProperty("scopes") &&
+    Array.isArray(queryObject["scopes"]) &&
+    queryObject["scopes"].every((value) => typeof value === "string") &&
+    queryObject.hasOwnProperty("state") &&
+    typeof queryObject["state"] === "string"
+  );
+};

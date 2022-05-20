@@ -55,8 +55,14 @@ const ScopesPage = () => {
     getClientName(clientQueryParams.clientId)
       .then((clientName: string) => setClientName(clientName))
       .catch((error) => {
-        setErrorMessage("Could not retrieve client application info. Please try again later.");
         setInputsDisabled(true);
+        setLoading(false);
+
+        if (error.response.status === 400) {
+          setErrorMessage("Could not retrieve client application info. Please try again later.");
+        } else {
+          setErrorMessage("Something went wrong. Please try again later.");
+        }
       });
 
     getScopes()
@@ -71,8 +77,14 @@ const ScopesPage = () => {
         setScopes(mappedScopes);
       })
       .catch((error) => {
-        setErrorMessage("Could not retrieve permissions from the server. Please try again later.");
         setInputsDisabled(true);
+        setLoading(false);
+
+        if (error.response.status === 400) {
+          setErrorMessage("Could not retrieve permissions from the server. Please try again later.");
+        } else {
+          setErrorMessage("Something went wrong. Please try again later.");
+        }
       });
   }, [clientQueryParams]);
 
@@ -114,7 +126,10 @@ const ScopesPage = () => {
             <Button variant="contained" disabled={inputsDisabled} onClick={submitHandler}>
               Approve
             </Button>
-            <a href={buildFailedCodeRedirect(clientQueryParams!.redirectUrl, clientQueryParams!.state)}>
+            <a
+              href={buildFailedCodeRedirect(clientQueryParams!.redirectUrl, clientQueryParams!.state)}
+              style={{ textDecoration: "none" }}
+            >
               <Button variant="contained" style={{ backgroundColor: "lightgray" }} disabled={inputsDisabled}>
                 Do not approve
               </Button>

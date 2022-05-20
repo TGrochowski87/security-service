@@ -10,6 +10,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IUserService, UserService>();
 
+builder.Services.AddCors(options =>
+{
+  options.AddPolicy("private", builder =>
+  {
+    builder.WithOrigins("http://localhost:3001").AllowAnyHeader().AllowAnyMethod();
+  });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -18,6 +26,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("private");
 
 app.UseHttpsRedirection();
 

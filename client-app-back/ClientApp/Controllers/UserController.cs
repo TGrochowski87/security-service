@@ -1,4 +1,5 @@
 ﻿using ClientApp.Service;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClientApp.Controllers
@@ -14,7 +15,8 @@ namespace ClientApp.Controllers
         }
 
         [HttpGet("token/{code}")]
-        public ActionResult GetToken(string code)
+        [EnableCors("private")]
+    public ActionResult GetToken(string code)
         {
             var result = _userService.GetToken(code);
 
