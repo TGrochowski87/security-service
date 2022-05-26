@@ -5,14 +5,15 @@ export const ScopeListStyled = styled.div`
   border: 1px solid lightgray;
 
   overflow: hidden;
-
-  min-width: 300px;
-  width: 40%;
-  max-width: 600px;
 `;
 
 export const Header = styled.div`
   background-color: #e8e8e8;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 
   border-bottom: 2px solid lightgray;
 
@@ -20,4 +21,8 @@ export const Header = styled.div`
 
   font-size: 1.5rem;
   font-weight: bold;
+
+  .css-ke5b6m-MuiButtonBase-root-MuiButton-root {
+    transition: transform 0.5s ease;
+  }
 `;

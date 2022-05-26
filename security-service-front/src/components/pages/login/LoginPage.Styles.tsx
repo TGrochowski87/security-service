@@ -1,4 +1,3 @@
-import { IconButton } from "@mui/material";
 import styled from "styled-components";
 
 export const LoginPageStyled = styled.div`
@@ -13,7 +12,7 @@ export const LoginPageStyled = styled.div`
 export const Logo = styled.img`
   width: 20%;
   max-width: 250px;
-  margin-bottom: 5rem;
+  margin-bottom: 1rem;
 `;
 
 export const Form = styled.form`
@@ -29,7 +28,7 @@ export const InputSpace = styled.div`
   align-items: center;
   flex-direction: column;
   row-gap: 2rem;
-  margin-bottom: 1rem;
+  margin: 4rem 0 1rem 0;
 
   min-width: 200px;
   width: 50%;

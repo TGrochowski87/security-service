@@ -68,29 +68,30 @@ namespace AuthorizationServer.Service
           scopes.Add(Enum.Parse<ScopeEnum>(codeParams[i]));
         }
 
-                var header = authorizationHeader
-                    .Substring("Basic ".Length)
-                    .Trim();
+        var header = authorizationHeader
+          .Substring("Basic ".Length)
+          .Trim();
 
-                var headerParams = Base64Helper.Decode(header).Split(":");
+        var headerParams = Base64Helper.Decode(header).Split(":");
 
         var clientId = headerParams[0];
         var clientSecret = headerParams[1];
 
-                var client = ExampleClient.Clients
-                    .FirstOrDefault(x => x.ClientId == clientId && x.ClientSecret == clientSecret);
+        var client = ExampleClient.Clients
+          .FirstOrDefault(x => x.ClientId == clientId && x.ClientSecret == clientSecret);
 
-                if (client == null)
-                    return Result.Fail<TokenResult>("Client not exists!");
+        if (client == null)
+          return Result.Fail<TokenResult>("Client not exists!");
 
-                var claims = new[] {
-                        new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                        new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                        new Claim("UserId", userId),
-                        new Claim("Scopes", string.Join(":",scopes.Select(x=>x.ToString()))),
-                        new Claim("ClientSecret", clientSecret)
-                };
+        var claims = new[]
+        {
+          new Claim(JwtRegisteredClaimNames.Sub, _configuration["Jwt:Subject"]),
+          new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+          new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
+          new Claim("UserId", userId),
+          new Claim("Scopes", string.Join(":", scopes.Select(x => x.ToString()))),
+          new Claim("ClientSecret", clientSecret)
+        };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
         var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -104,13 +105,13 @@ namespace AuthorizationServer.Service
 
         var result = new TokenResult(new JwtSecurityTokenHandler().WriteToken(token), "Bearer", scopes);
 
-                return Result.Success(result);
-            }
-            catch (Exception e)
-            {
-                return Result.Fail<TokenResult>(e.Message);
-            }
-        }
+        return Result.Success(result);
+      }
+      catch (Exception e)
+      {
+        return Result.Fail<TokenResult>(e.Message);
+      }
+    }
 
     public Result<string> GetClientName(string clientId)
     {

@@ -33,10 +33,8 @@ export const parseClientQueryParams = (searchParams: string): ClientQueryParams 
   }
 };
 
-export const buildSuccessfulCodeRedirect = (redirectUrl: string, code: string, state: string): string =>
+export const buildCodeRedirect = (redirectUrl: string, code: string, state: string): string =>
   `${redirectUrl}?code=${code}&state=${state}`;
-
-export const buildFailedCodeRedirect = (redirectUrl: string, state: string): string => `${redirectUrl}?state=${state}`;
 
 const allRequiredPropertiesArePresent = (queryObject: any): boolean => {
   return (
@@ -46,9 +44,6 @@ const allRequiredPropertiesArePresent = (queryObject: any): boolean => {
     typeof queryObject["redirectUrl"] === "string" &&
     queryObject.hasOwnProperty("responseType") &&
     typeof queryObject["responseType"] === "string" &&
-    queryObject.hasOwnProperty("scopes") &&
-    Array.isArray(queryObject["scopes"]) &&
-    queryObject["scopes"].every((value) => typeof value === "string") &&
     queryObject.hasOwnProperty("state") &&
     typeof queryObject["state"] === "string"
   );
