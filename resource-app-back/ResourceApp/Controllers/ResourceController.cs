@@ -30,5 +30,39 @@ namespace ResourceApp.Controllers
 
             return Ok(result.Value);
         }
+
+        [HttpGet("photos")]
+        [EnableCors("public")]
+        public ActionResult<string> Photos()
+        {
+            Request.Headers.TryGetValue("Authorization", out var authorization);
+
+            if (string.IsNullOrEmpty(authorization))
+                return BadRequest("Empty headers");
+
+            var result = _resourceService.GetPhotos(authorization);
+
+            if (result.IsFailure)
+                return BadRequest(result);
+
+            return Ok(result.Value);
+        }
+
+        [HttpGet("timeline")]
+        [EnableCors("public")]
+        public ActionResult<string> Timeline()
+        {
+            Request.Headers.TryGetValue("Authorization", out var authorization);
+
+            if (string.IsNullOrEmpty(authorization))
+                return BadRequest("Empty headers");
+
+            var result = _resourceService.GetTimeline(authorization);
+
+            if (result.IsFailure)
+                return BadRequest(result);
+
+            return Ok(result.Value);
+        }
     }
 }
