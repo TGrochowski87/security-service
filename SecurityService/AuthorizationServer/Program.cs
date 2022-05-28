@@ -29,16 +29,31 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 builder.Services.AddCors(options =>
 {
-  // Clients
-  options.AddPolicy("public", builder =>
-  {
-    builder.WithOrigins("https://localhost:7171").AllowAnyHeader().WithMethods(HttpMethod.Post.Method);
-  });
+    // Clients
+    options.AddPolicy("public", builder =>
+    {
+        builder.WithOrigins("https://localhost:7171").AllowAnyHeader().WithMethods(HttpMethod.Post.Method);
+    });
 
-  // Service front
-  options.AddPolicy("private", builder =>
+    options.AddPolicy("public", builder =>
+    {
+        builder.WithOrigins("https://localhost:7265").AllowAnyHeader().WithMethods(HttpMethod.Post.Method);
+    });
+
+    options.AddPolicy("public", builder =>
+    {
+        builder.WithOrigins("https://localhost:7085").AllowAnyHeader().WithMethods(HttpMethod.Post.Method);
+    });
+
+    options.AddPolicy("public", builder =>
+    {
+        builder.WithOrigins("https://localhost:7044").AllowAnyHeader().WithMethods(HttpMethod.Post.Method);
+    });
+
+    // Service front
+    options.AddPolicy("private", builder =>
   {
-    builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
+      builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
   });
 });
 

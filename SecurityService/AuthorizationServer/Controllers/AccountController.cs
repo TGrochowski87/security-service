@@ -17,25 +17,29 @@ namespace AuthorizationServer.Controllers
             _accountService = accountService;
         }
 
-    [HttpPost("login")]
-    [EnableCors("private")]
-    public ActionResult<string> Login([FromBody] Credentials model)
-    {
-      var result = _accountService.Login(model);
+        [HttpPost("login/admin")]
+        [EnableCors("private")]
+        public ActionResult<TokenResult> LoginAdmin([FromBody] CredentialsAdmin model)
+        {
+            var result = _accountService.LoginAdmin(model);
 
             if (result.IsFailure)
                 return BadRequest(result);
 
-      return Ok(result.Value);
-    }
+            return Ok(result.Value);
+        }
 
-    [HttpPost("code")]
-    [EnableCors("private")]
-    public ActionResult<string> Code([FromBody] CodeComponents codeComponents)
-    {
-      var result = _accountService.GenerateAuthorizationCode(codeComponents);
-      return Ok(result);
-    }
+        [HttpPost("login")]
+        [EnableCors("private")]
+        public ActionResult<string> Login([FromBody] Credentials model)
+        {
+            var result = _accountService.Login(model);
+
+            if (result.IsFailure)
+                return BadRequest(result);
+
+            return Ok(result.Value);
+        }
 
         [HttpGet("scopes")]
         [EnableCors("private")]
@@ -46,8 +50,8 @@ namespace AuthorizationServer.Controllers
             if (result.IsFailure)
                 return BadRequest(result);
 
-      return Ok(result.Value);
-    }
+            return Ok(result.Value);
+        }
 
         [HttpPost("token")]
         [EnableCors("public")]
@@ -55,7 +59,7 @@ namespace AuthorizationServer.Controllers
         {
             Request.Headers.TryGetValue("Authorization", out var authorization);
 
-            if(string.IsNullOrEmpty(authorization))
+            if (string.IsNullOrEmpty(authorization))
                 return BadRequest("Empty headers");
 
             var result = _accountService.Token(model, authorization);
@@ -66,16 +70,50 @@ namespace AuthorizationServer.Controllers
             return Ok(result.Value);
         }
 
-    [HttpGet("client/{clientId}")]
-    [EnableCors("private")]
-    public ActionResult<string> GetClient([FromRoute] string clientId)
-    {
-      var result = _accountService.GetClientName(clientId);
+        [HttpGet("client/{clientId}")]
+        [EnableCors("private")]
+        public ActionResult<string> GetClient([FromRoute] string clientId)
+        {
+            var result = _accountService.GetClientName(clientId);
 
             if (result.IsFailure)
                 return BadRequest(result);
 
-      return Ok(result.Value);
+            return Ok(result.Value);
+        }
+
+        [HttpPut("client/{clientId}")]
+        [EnableCors("private")]
+        public ActionResult UpdateClient([FromRoute] string clientId, [FromBody] List<ScopeEnum> scopes)
+        {
+            Request.Headers.TryGetValue("Authorization", out var authorization);
+
+            if (string.IsNullOrEmpty(authorization))
+                return BadRequest("Empty headers");
+
+            var result = _accountService.UpdateClient(clientId, scopes, authorization);
+
+            if (result.IsFailure)
+                return BadRequest();
+
+            return Ok();
+        }
+
+        [HttpGet("clients}")]
+        [EnableCors("private")]
+        public ActionResult<IEnumerable<ClientItem>> GetClients()
+        {
+            Request.Headers.TryGetValue("Authorization", out var authorization);
+
+            if (string.IsNullOrEmpty(authorization))
+                return BadRequest("Empty headers");
+
+            var result = _accountService.GetClients(authorization);
+
+            if (result.IsFailure)
+                return BadRequest(result);
+
+            return Ok(result.Value);
+        }
     }
-  }
 }

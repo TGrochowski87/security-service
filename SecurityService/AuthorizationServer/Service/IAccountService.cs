@@ -6,9 +6,11 @@ namespace AuthorizationServer.Service
     public interface IAccountService
     {
         Result<string> Login(Credentials user);
+        Result<TokenResult> LoginAdmin(CredentialsAdmin credentials);
         Result<List<string>> GetScopes();
-        string GenerateAuthorizationCode(CodeComponents codeComponents);
         Result<TokenResult> Token(TokenModel model, string authorizationHeader);
         Result<string> GetClientName(string clientId);
+        Result UpdateClient(string clientId, List<ScopeEnum> scopes, string authorizationHeader);
+        Result<IEnumerable<ClientItem>> GetClients(string authorizationHeader);
     }
 }
