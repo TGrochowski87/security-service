@@ -2,7 +2,12 @@ import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { NavbarStyled } from "./Navbar.Styled";
 
-const Navbar = () => {
+interface Props {
+  adminLoggedIn: boolean;
+  setAdminLoggedIn: Function;
+}
+
+const Navbar = ({ adminLoggedIn, setAdminLoggedIn }: Props) => {
   const navigate = useNavigate();
 
   return (
@@ -15,14 +20,26 @@ const Navbar = () => {
       >
         Control Panel
       </Button>
-      <Button
-        variant="outlined"
-        onClick={() => {
-          navigate("/login/admin");
-        }}
-      >
-        Log in as administrator
-      </Button>
+      {adminLoggedIn ? (
+        <Button
+          variant="outlined"
+          onClick={() => {
+            sessionStorage.removeItem("token");
+            setAdminLoggedIn(false);
+          }}
+        >
+          Log out
+        </Button>
+      ) : (
+        <Button
+          variant="outlined"
+          onClick={() => {
+            navigate("/login/admin");
+          }}
+        >
+          Log in as administrator
+        </Button>
+      )}
     </NavbarStyled>
   );
 };

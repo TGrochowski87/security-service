@@ -11,6 +11,6 @@ namespace AuthorizationServer.Service
         Result<TokenResult> Token(TokenModel model, string authorizationHeader);
         Result<string> GetClientName(string clientId);
         Result UpdateClient(string clientId, List<ScopeEnum> scopes, string authorizationHeader);
-        Result<IEnumerable<ClientItem>> GetClients(string authorizationHeader);
+        Result<IEnumerable<ClientGet>> GetClients(string authorizationHeader);
     }
 }

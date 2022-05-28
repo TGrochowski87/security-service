@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const getToken = (code: string) => {
+export const getToken = async (code: string) => {
   if (code.length > 0) {
     axios
       .get(`https://localhost:7171/users/token/${code}`)
@@ -11,7 +11,7 @@ export const getToken = (code: string) => {
   }
 };
 
-export const getResource = (token: string): Promise<string> => {
+export const getResource = async (token: string): Promise<string> => {
   return axios
     .get<string>(`https://localhost:7006/resource/friends`, {
       headers: {
@@ -19,7 +19,6 @@ export const getResource = (token: string): Promise<string> => {
       },
     })
     .then((response) => {
-      console.log(response.data);
       return response.data;
     });
 };

@@ -2,10 +2,15 @@ import icon from "assets/security-icon.png";
 import { HomePageStyled, Logo } from "./HomePage.Styles";
 import Navbar from "./Navbar";
 
-const HomePage = () => {
+interface Props {
+  adminLoggedIn: boolean;
+  setAdminLoggedIn: Function;
+}
+
+const HomePage = ({ adminLoggedIn, setAdminLoggedIn }: Props) => {
   return (
     <HomePageStyled>
-      <Navbar />
+      <Navbar adminLoggedIn={adminLoggedIn} setAdminLoggedIn={setAdminLoggedIn} />
       <Logo src={icon} alt="logo" />
       <br />
       <h2>

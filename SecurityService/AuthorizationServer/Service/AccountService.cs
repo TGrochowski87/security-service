@@ -162,20 +162,20 @@ namespace AuthorizationServer.Service
       }
     }
 
-    public Result<IEnumerable<ClientItem>> GetClients(string authorizationHeader)
+    public Result<IEnumerable<ClientGet>> GetClients(string authorizationHeader)
     {
       try
       {
         if (!ValidateToken(authorizationHeader))
-          return Result.Fail<IEnumerable<ClientItem>>("Admin not exists!");
+          return Result.Fail<IEnumerable<ClientGet>>("Admin not exists!");
 
-        var result = ExampleClient.Clients.Select(c => new ClientItem(c.ClientId, c.ClientName, c.Scopes));
+        var result = ExampleClient.Clients.Select(c => new ClientGet(c.ClientId, c.ClientName, c.Scopes));
 
         return Result.Success(result);
       }
       catch (Exception e)
       {
-        return Result.Fail<IEnumerable<ClientItem>>(e.Message);
+        return Result.Fail<IEnumerable<ClientGet>>(e.Message);
       }
     }
 

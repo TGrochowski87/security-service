@@ -14,7 +14,7 @@ function App() {
       <GlobalStyles />
       <Router>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<HomePage adminLoggedIn={adminLoggedIn} setAdminLoggedIn={setAdminLoggedIn} />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/login/admin" element={<LoginPageAdmin setAdminLoggedIn={setAdminLoggedIn} />} />
           <Route

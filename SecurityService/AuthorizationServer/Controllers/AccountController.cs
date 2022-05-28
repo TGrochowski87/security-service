@@ -70,7 +70,7 @@ namespace AuthorizationServer.Controllers
             return Ok(result.Value);
         }
 
-        [HttpGet("client/{clientId}")]
+        [HttpGet("clients/{clientId}")]
         [EnableCors("private")]
         public ActionResult<string> GetClient([FromRoute] string clientId)
         {
@@ -82,16 +82,16 @@ namespace AuthorizationServer.Controllers
             return Ok(result.Value);
         }
 
-        [HttpPut("client/{clientId}")]
+        [HttpPut("clients")]
         [EnableCors("private")]
-        public ActionResult UpdateClient([FromRoute] string clientId, [FromBody] List<ScopeEnum> scopes)
+        public ActionResult UpdateClient([FromBody] ClientUpdate clientUpdate)
         {
             Request.Headers.TryGetValue("Authorization", out var authorization);
 
             if (string.IsNullOrEmpty(authorization))
                 return BadRequest("Empty headers");
 
-            var result = _accountService.UpdateClient(clientId, scopes, authorization);
+            var result = _accountService.UpdateClient(clientUpdate.Id, clientUpdate.Scopes, authorization);
 
             if (result.IsFailure)
                 return BadRequest();
@@ -101,7 +101,7 @@ namespace AuthorizationServer.Controllers
 
         [HttpGet("clients")]
         [EnableCors("private")]
-        public ActionResult<IEnumerable<ClientItem>> GetClients()
+        public ActionResult<IEnumerable<ClientGet>> GetClients()
         {
             Request.Headers.TryGetValue("Authorization", out var authorization);
 
