@@ -19,7 +19,7 @@ function App() {
   const redirectData = useRef<RedirectData>({
     responseType: "code",
     clientId: "4a94380e-5c20-40ac-af63-00aea75aa1c2",
-    redirectUrl: "http://localhost:3001/",
+    redirectUrl: "http://localhost:3002/",
     state: "fadgfag3df58knfd0ns26klg3n1dfklgjn",
   });
   const authServerBaseUrl = useRef("http://localhost:3000/login");

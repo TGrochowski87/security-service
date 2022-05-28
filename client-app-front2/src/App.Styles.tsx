@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const AppStyled = styled.div`
-  background-color: #d5bba9;
+  background-color: #c4d6e6;
 `;
 
 export const ButtonSpace = styled.div`

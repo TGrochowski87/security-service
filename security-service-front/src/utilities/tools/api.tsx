@@ -15,7 +15,7 @@ export const getScopes = async (): Promise<string[]> => {
 };
 
 export const getClientName = async (clientId: string): Promise<string> => {
-  return axios.get<string>(`https://localhost:7094/accounts/client/${clientId}`).then((response) => response.data);
+  return axios.get<string>(`https://localhost:7094/accounts/clients/${clientId}`).then((response) => response.data);
 };
 
 export const loginUser = async (credentials: LoginData, clientId: string): Promise<string> => {

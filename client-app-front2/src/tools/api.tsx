@@ -3,7 +3,7 @@ import axios from "axios";
 export const getToken = async (code: string) => {
   if (code.length > 0) {
     axios
-      .get(`https://localhost:7171/users/token/${code}`)
+      .get(`https://localhost:7265/users/token/${code}`)
       .then((response) => {
         sessionStorage.setItem("token", response.data.value.accessToken);
       })

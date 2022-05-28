@@ -25,7 +25,7 @@ namespace ResourceApp.Service
                 return string.Join(',', result.Friends);
             }
             else
-                return Result.Fail<string>("Scope:Friends is required!");
+                return Result.Fail<string>("Forbidden");
         }
 
         public Result<string> GetPhotos(string authorizationHeader)
@@ -48,7 +48,7 @@ namespace ResourceApp.Service
                 return string.Join(',', result.Photos);
             }
             else
-                return Result.Fail<string>("Scope:Photos is required!");
+                return Result.Fail<string>("Forbidden");
         }
 
         public Result<string> GetTimeline(string authorizationHeader)
@@ -71,7 +71,7 @@ namespace ResourceApp.Service
                 return string.Join(',', result.Posts);
             }
             else
-                return Result.Fail<string>("Scope:Timeline is required!");
+                return Result.Fail<string>("Forbidden");
         }
     }
 }

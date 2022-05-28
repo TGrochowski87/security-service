@@ -15,46 +15,32 @@ builder.Services.AddSingleton<IAccountService, AccountService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = false;
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters()
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-    };
+  options.RequireHttpsMetadata = false;
+  options.SaveToken = true;
+  options.TokenValidationParameters = new TokenValidationParameters()
+  {
+    ValidateIssuer = true,
+    ValidateAudience = true,
+    ValidAudience = builder.Configuration["Jwt:Audience"],
+    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+  };
 });
 
 builder.Services.AddCors(options =>
 {
-    // Clients
-    options.AddPolicy("public", builder =>
-    {
-        builder.WithOrigins("https://localhost:7171").AllowAnyHeader().WithMethods(HttpMethod.Post.Method);
-    });
-
-    options.AddPolicy("public", builder =>
-    {
-        builder.WithOrigins("https://localhost:7265").AllowAnyHeader().WithMethods(HttpMethod.Post.Method);
-    });
-
-    options.AddPolicy("public", builder =>
-    {
-        builder.WithOrigins("https://localhost:7085").AllowAnyHeader().WithMethods(HttpMethod.Post.Method);
-    });
-
-    options.AddPolicy("public", builder =>
-    {
-        builder.WithOrigins("https://localhost:7044").AllowAnyHeader().WithMethods(HttpMethod.Post.Method);
-    });
-
-    // Service front
-    options.AddPolicy("private", builder =>
+  // Clients
+  options.AddPolicy("public", builder =>
   {
-      builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
+    builder
+      .WithOrigins("https://localhost:7171", "https://localhost:7265", "https://localhost:7044")
+      .AllowAnyHeader()
+      .WithMethods(HttpMethod.Post.Method);
   });
+
+  // Service front
+  options.AddPolicy("private",
+    builder => { builder.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod(); });
 });
 
 var app = builder.Build();
@@ -62,8 +48,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+  app.UseSwagger();
+  app.UseSwaggerUI();
 }
 
 app.UseCors();
