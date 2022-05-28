@@ -99,7 +99,7 @@ namespace AuthorizationServer.Controllers
             return Ok();
         }
 
-        [HttpGet("clients}")]
+        [HttpGet("clients")]
         [EnableCors("private")]
         public ActionResult<IEnumerable<ClientItem>> GetClients()
         {
