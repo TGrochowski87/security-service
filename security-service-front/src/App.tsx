@@ -7,7 +7,7 @@ import { useState } from "react";
 import ControlPanel from "components/pages/control-panel/ControlPanel";
 
 function App() {
-  const [adminLoggedIn, setAdminLoggedIn] = useState(true);
+  const [adminLoggedIn, setAdminLoggedIn] = useState(false);
 
   return (
     <div className="app">

@@ -18,7 +18,7 @@ function App() {
 
   const redirectData = useRef<RedirectData>({
     responseType: "code",
-    clientId: "4a94380e-5c20-40ac-af63-00aea75aa1c2",
+    clientId: "39a3e57f-e2f0-472d-abc9-f163801ea58d",
     redirectUrl: "http://localhost:3003/",
     state: "fadgfag3df58knfd0ns26klg3n1dfklgjn",
   });
